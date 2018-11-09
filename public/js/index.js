@@ -8,12 +8,14 @@ socket.on('connect' , function(){
 })
 
 socket.on('newMessage' , function(message){
-    // Create <li> for render message
-    const li = $('<li></li>');
-    // Add content for li
-    li.text(`${message.from} : ${message.text}`)
-    // Add li to <ol>
-    $('#messages').append(li)
+    const formattedTime = moment(message.createdAt).format('h:mm a') 
+    const template = $('#message-template').html();
+    const html = Mustache.render(template , {
+        from: message.from,
+        text: message.text,
+        createdAt: formattedTime
+        });
+    $('#messages').append(html)
 })
 
 
@@ -29,3 +31,15 @@ $('#message-form').on('submit', function(e){
         console.log("Sended")
     })
 })
+
+/*
+socket.on('newMessage' , function(message){
+    // Create <li> for render message
+    const li = $('<li></li>');
+    // Add content for li
+    li.text(`${message.from} : ${message.text}`)
+    // Add li to <ol>
+    $('#messages').append(li)
+})
+
+*/
