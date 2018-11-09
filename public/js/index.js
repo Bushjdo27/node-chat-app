@@ -50,7 +50,6 @@ locationButton.on('click' , function(){
         return alert('Geolocation is not supported by your browser')
     }
     navigator.geolocation.getCurrentPosition(function(position){
-        console.log(position);
         socket.emit('createLocationMessage' , {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
