@@ -18,7 +18,18 @@ socket.on('newMessage' , function(message){
     $('#messages').append(html)
 })
 
+socket.on('newLocationMessage' , function(message){
+    const formattedTime = moment(message.createdAt).format('h:mm a') 
+    const template = $('#location-template').html();
+    const html = Mustache.render(template , {
+        from: message.from,
+        url: message.url,
+        createdAt: formattedTime
+        });
+    $('#messages').append(html)
+})
 
+//https://www.google.com/maps/q=
 $('#message-form').on('submit', function(e){
     e.preventDefault();
     
@@ -31,6 +42,24 @@ $('#message-form').on('submit', function(e){
         console.log("Sended")
     })
 })
+
+const locationButton = $('#send-location');
+
+locationButton.on('click' , function(){
+    if(!navigator.geolocation){
+        return alert('Geolocation is not supported by your browser')
+    }
+    navigator.geolocation.getCurrentPosition(function(position){
+        console.log(position);
+        socket.emit('createLocationMessage' , {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        })
+    } , function(){
+        alert('Unable to fetch location')
+    })
+})
+
 
 /*
 socket.on('newMessage' , function(message){
